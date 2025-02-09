@@ -2,19 +2,24 @@
   "name": "campus-cupid-backend",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push"
   },
   "dependencies": {
     "@hono/node-server": "^1.13.8",
     "drizzle-kit": "^0.30.4",
     "drizzle-orm": "^0.39.2",
     "hono": "^4.6.20",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.10.0",
     "postgres": "^3.4.5"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@types/bun": "^1.2.2",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/node": "^20.11.17",
+    "@types/nodemailer": "^6.4.17",
     "tsx": "^4.7.1"
   }
 }

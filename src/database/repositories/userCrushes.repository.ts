@@ -2,6 +2,7 @@ import { and, eq } from "drizzle-orm";
 import { db } from "../db.ts";
 import { userCrushes } from "../schema/userCrushes.ts";
 import { users } from "../schema/users.ts";
+import { inviteToApp } from "@/services/mailer.service.ts";
 
 type CrushDetails = {
     name: string;
@@ -39,14 +40,37 @@ export const getCrushesByNetId = async(netId: string): Promise<Array<CrushDetail
 
 export const addCrush = async(netId: string, position: number, crushId: string): Promise<boolean | Error> => {
     try {
-        await db.insert(userCrushes).values({
-            netId,
-            position,
-            crushId
+
+        await db.transaction(async (tx) => {
+            const crushExists = await tx.select().from(users).where(eq(users.netId, crushId));
+            if (crushExists.length === 0) {
+                inviteToApp(String(`${crushId}@srmist.edu.in`));
+            }
+
+            const checkMaxCrushes = await tx.select().from(userCrushes).where(eq(userCrushes.netId, netId));
+            if (checkMaxCrushes.length >= 5) {
+                throw new Error("Max crushes reached");
+            }
+
+            const crush = await tx.select().from(userCrushes).where(
+                and(
+                    eq(userCrushes.netId, netId),
+                    eq(userCrushes.crushId, crushId)
+                )
+            );
+
+            if (crush.length > 0) {
+                throw new Error("Crush already exists");
+            }
+
+            await tx.insert(userCrushes).values({
+                netId,
+                position,
+                crushId
+            });
         })
 
         return true;
-
     } catch(error) {
         return error as Error;
     }

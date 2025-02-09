@@ -1,4 +1,4 @@
-import { eq, or } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { db } from "../db.ts";
 import { results, type SelectResult } from "../schema/results.ts";
 import { users } from "../schema/users.ts";

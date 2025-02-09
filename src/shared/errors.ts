@@ -4,7 +4,7 @@ export type Error = {
     prettyMessage: string;
 }
 
-const errors: Map<number, Error> = new Map([
+export const errors: Map<number, Error> = new Map([
     [400, { status: 400, message: 'Bad Request', prettyMessage: 'Invalid request' }],
     [401, { status: 401, message: 'Unauthorized', prettyMessage: 'You are not authorized to access this resource' }],
     [403, { status: 403, message: 'Forbidden', prettyMessage: 'You are forbidden from accessing this resource' }],
