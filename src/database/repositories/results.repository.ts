@@ -31,7 +31,7 @@ export const getResults = async (netId: string): Promise<Array<GetResult> | Erro
             eq(results.user2, netId)
         ))
 
-        if (userResults.length == 0) {
+        if (userResults.length === 0) {
             throw new Error("No results found");
         }
 

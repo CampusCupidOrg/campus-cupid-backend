@@ -26,7 +26,7 @@ export const getCrushesByNetId = async(netId: string): Promise<Array<CrushDetail
         .orderBy(userCrushes.position)
         .where(eq(userCrushes.netId, netId));
         
-        if (crushes.length == 0) {
+        if (crushes.length === 0) {
             throw new Error("No crushes found");
         }
 

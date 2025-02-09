@@ -26,6 +26,8 @@ export const loadEnv = (): Env => {
     return {
         DATABASE_URL,
         JWT_SECRET,
-        PORT: parseInt(PORT)
+        PORT: Number.parseInt(PORT)
     } satisfies Env;
 }
+
+export const env = loadEnv();
