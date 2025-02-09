@@ -1,4 +1,4 @@
-import { addCrush, getCrushesByNetId } from "@/database/repositories/userCrushes.repository.ts";
+import { addCrush, getCrushesByNetId, updateCrushPositions } from "@/database/repositories/userCrushes.repository.ts";
 import { searchUser } from "@/database/repositories/users.repository.ts";
 import type { Context } from "hono";
 
@@ -85,5 +85,40 @@ export const fetchUserCrushes = async(c: Context) => {
         data: {
             crushes
         }
+    }, 200);
+}
+
+type UpdateCrushBody = {
+    position: number;
+    crushId: string;
+}
+
+export const updateOrderOfCrushes = async(c: Context) => {
+    const netId = c.get("email").split("@")[0];
+    const body = await c.req.json()
+
+    if (!body.updateData) {
+        return c.json({
+            status: 400,
+            message: "Bad Request",
+            prettyMessage: "Invalid request"
+        }, 400);
+    }
+
+    const updateData = body.updateData as Array<UpdateCrushBody>;
+    const result = await updateCrushPositions(netId, updateData);
+
+    if (result instanceof Error) {
+        return c.json({
+            status: 500,
+            message: "Internal server error",
+            prettyMessage: "An error occurred while updating crushes"
+        }, 500);
+    }
+
+    return c.json({
+        status: 200,
+        message: "Crushes updated",
+        prettyMessage: "Crushes updated successfully"
     }, 200);
 }
