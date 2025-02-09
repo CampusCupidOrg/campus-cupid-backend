@@ -2,13 +2,20 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "NodeNext",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "strict": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "types": [
-      "node"
+      "node",
+      "bun"
     ],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   }
 }

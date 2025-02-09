@@ -6,9 +6,14 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.13.8",
-    "hono": "^4.6.20"
+    "drizzle-kit": "^0.30.4",
+    "drizzle-orm": "^0.39.2",
+    "hono": "^4.6.20",
+    "postgres": "^3.4.5"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/bun": "^1.2.2",
     "@types/node": "^20.11.17",
     "tsx": "^4.7.1"
   }
