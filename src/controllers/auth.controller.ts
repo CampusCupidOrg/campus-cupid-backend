@@ -19,7 +19,7 @@ export const login = async (c: Context) => {
   const token = generateToken(body.email);
   const link = `${env.APP_URL}/verify?token=${token}`;
 
-  let mailRequest = getMailOptions(body.email, link);
+  const mailRequest = getMailOptions(body.email, link);
 
   return createTransport().sendMail(mailRequest, (error) => {
     if (error) {
@@ -31,60 +31,59 @@ export const login = async (c: Context) => {
         },
         500
       );
-    } else {
-      const res: ReturnRes = {
-        status: 200,
-        message: "Email sent",
-        prettyMessage: `Email sent to ${body.email}`,
-      };
-      return c.json(res, 200);
     }
+    const res: ReturnRes = {
+      status: 200,
+      message: "Email sent",
+      prettyMessage: `Email sent to ${body.email}`,
+    };
+    return c.json(res, 200);
   });
 };
 
 export const verify = async (c: Context) => {
-  const token= c.req.query('token');
+  const token = c.req.query('token');
 
   if (!token) {
     return errors.get(400);
   }
 
-  let decodedToken;
+  let decodedToken: JwtPayload;
   try {
-    decodedToken = jwt.verify(token, env.JWT_SECRET);
+    decodedToken = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
   } catch {
     return c.json({
-        status: 401,
-        message: "Invalid authentication credentials",
-        prettyMessage: "Invalid authentication credentials",
-    })
+      status: 401,
+      message: "Invalid authentication credentials",
+      prettyMessage: "Invalid authentication credentials",
+    });
   }
 
   if (
-    !decodedToken.hasOwnProperty("email") ||
-    !decodedToken.hasOwnProperty("expirationDate")
+    !Object.prototype.hasOwnProperty.call(decodedToken, "email") ||
+    !Object.prototype.hasOwnProperty.call(decodedToken, "expirationDate")
   ) {
     return c.json({
-        status: 401,
-        message: "Invalid authentication credentials",
-        prettyMessage: "Invalid authentication credentials",
-    })
+      status: 401,
+      message: "Invalid authentication credentials",
+      prettyMessage: "Invalid authentication credentials",
+    });
   }
 
-  const { expirationDate } = decodedToken as JwtPayload;
+  const { expirationDate } = decodedToken;
   if (expirationDate < new Date()) {
     return c.json({
-        status: 401,
-        message: "Token expired",
-        prettyMessage: "Token expired",
-    })
+      status: 401,
+      message: "Token expired",
+      prettyMessage: "Token expired",
+    });
   }
   return c.json({
     status: 200,
     message: "Token verified",
     prettyMessage: "Token verified",
     data: {
-        "token": token
+      token: token
     }
-  })
+  });
 };

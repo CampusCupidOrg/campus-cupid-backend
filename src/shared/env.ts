@@ -1,10 +1,17 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 type Env = {
     APP_URL: string;
     DATABASE_URL: string;
     JWT_SECRET: string;
     PORT: number;
-    EMAIL: string;
-    EMAIL_PASSWORD: string;
+    EMAIL?: string;
+    EMAIL_PASSWORD?: string;
+    OAuth: {
+        GOOGLE_CLIENT_ID: string;
+        GOOGLE_CLIENT_SECRET: string;
+    };
 }
 
 export const loadEnv = (): Env => {
@@ -33,12 +40,8 @@ export const loadEnv = (): Env => {
         throw new Error("PORT is required");
     }
 
-    if (!EMAIL) {
-        throw new Error("EMAIL is required");
-    }
-
-    if (!EMAIL_PASSWORD) {
-        throw new Error("EMAIL_PASSWORD is required");
+    if (!process.env.GOOGLE_CLIENT_ID) {
+        throw new Error("GOOGLE_CLIENT_ID is required");
     }
 
     return {
@@ -46,8 +49,12 @@ export const loadEnv = (): Env => {
         DATABASE_URL,
         JWT_SECRET,
         PORT: Number.parseInt(PORT),
-        EMAIL,
-        EMAIL_PASSWORD
+        EMAIL: EMAIL || undefined,
+        EMAIL_PASSWORD: EMAIL_PASSWORD || undefined,
+        OAuth: {
+            GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || "",
+            GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || ""
+        }
     } satisfies Env;
 }
 
